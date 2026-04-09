@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import {
   defaultGallery,
   GALLERY_KEY,
@@ -8,11 +9,20 @@ import {
 } from "@/app/lib/site-data"
 
 export default function AdminGalleryPage() {
+  const router = useRouter()
+  const [ready, setReady] = useState(false)
   const [gallery, setGallery] = useState<GalleryItem[]>(defaultGallery)
   const [image, setImage] = useState("")
   const [title, setTitle] = useState("")
 
   useEffect(() => {
+    const isAdmin = localStorage.getItem("isAdmin")
+
+    if (!isAdmin) {
+      router.push("/admin/login")
+      return
+    }
+
     const savedGallery = localStorage.getItem(GALLERY_KEY)
 
     if (savedGallery) {
@@ -20,7 +30,9 @@ export default function AdminGalleryPage() {
     } else {
       localStorage.setItem(GALLERY_KEY, JSON.stringify(defaultGallery))
     }
-  }, [])
+
+    setReady(true)
+  }, [router])
 
   const saveGallery = (items: GalleryItem[]) => {
     setGallery(items)
@@ -49,6 +61,8 @@ export default function AdminGalleryPage() {
     const updated = gallery.filter((item) => item.id !== id)
     saveGallery(updated)
   }
+
+  if (!ready) return null
 
   return (
     <main className="min-h-screen bg-neutral-950 px-6 py-16 text-white">

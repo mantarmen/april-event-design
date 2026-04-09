@@ -1,4 +1,8 @@
+"use client"
+
 import Link from "next/link"
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
 
 const cards = [
   {
@@ -13,12 +17,21 @@ const cards = [
   },
   {
     title: "Settings",
-    description: "Update phone, email, and social links.",
+    description: "Update phone, email, wallpaper, colors, and font style.",
     href: "/admin/settings",
   },
 ]
 
 export default function AdminPage() {
+  const router = useRouter()
+
+  useEffect(() => {
+    const isAdmin = localStorage.getItem("isAdmin")
+    if (!isAdmin) {
+      router.push("/admin/login")
+    }
+  }, [router])
+
   return (
     <main className="min-h-screen bg-neutral-950 px-6 py-16 text-white">
       <div className="mx-auto max-w-6xl">
@@ -30,6 +43,18 @@ export default function AdminPage() {
           <p className="mt-3 max-w-2xl text-white/60">
             Manage your homepage content, gallery visuals, and business details here.
           </p>
+        </div>
+
+        <div className="mb-8">
+          <button
+            onClick={() => {
+              localStorage.removeItem("isAdmin")
+              router.push("/admin/login")
+            }}
+            className="rounded-full border border-white/15 px-5 py-2 text-sm text-white/80"
+          >
+            Logout
+          </button>
         </div>
 
         <div className="grid gap-6 md:grid-cols-3">

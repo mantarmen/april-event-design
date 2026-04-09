@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import {
   defaultSiteContent,
   SITE_CONTENT_KEY,
@@ -8,9 +9,18 @@ import {
 } from "@/app/lib/site-data"
 
 export default function AdminContentPage() {
+  const router = useRouter()
+  const [ready, setReady] = useState(false)
   const [form, setForm] = useState<SiteContent>(defaultSiteContent)
 
   useEffect(() => {
+    const isAdmin = localStorage.getItem("isAdmin")
+
+    if (!isAdmin) {
+      router.push("/admin/login")
+      return
+    }
+
     const savedContent = localStorage.getItem(SITE_CONTENT_KEY)
 
     if (savedContent) {
@@ -18,7 +28,9 @@ export default function AdminContentPage() {
     } else {
       localStorage.setItem(SITE_CONTENT_KEY, JSON.stringify(defaultSiteContent))
     }
-  }, [])
+
+    setReady(true)
+  }, [router])
 
   const updateField = (key: keyof SiteContent, value: string) => {
     setForm((prev) => ({
@@ -31,6 +43,8 @@ export default function AdminContentPage() {
     localStorage.setItem(SITE_CONTENT_KEY, JSON.stringify(form))
     alert("Content saved!")
   }
+
+  if (!ready) return null
 
   return (
     <main className="min-h-screen bg-neutral-950 px-6 py-16 text-white">

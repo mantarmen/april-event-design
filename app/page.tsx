@@ -36,6 +36,7 @@ const cormorant = Cormorant_Garamond({
 export default function Home() {
   const [siteContent, setSiteContent] = useState<SiteContent>(defaultSiteContent)
   const [gallery, setGallery] = useState<GalleryItem[]>(defaultGallery)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     const savedContent = localStorage.getItem(SITE_CONTENT_KEY)
@@ -88,11 +89,13 @@ export default function Home() {
     backgroundAttachment: "fixed" as const,
   }
 
+  const closeMenu = () => setMenuOpen(false)
+
   return (
     <main className={`${bodyFontClass} text-white`} style={mainStyle}>
       <header className="fixed left-0 top-0 z-50 w-full border-b border-white/10 bg-black/45 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <a href="#home" className="text-lg font-semibold tracking-wide">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
+          <a href="#home" className="text-base font-semibold tracking-wide sm:text-lg">
             April Event Design
           </a>
 
@@ -110,38 +113,70 @@ export default function Home() {
               Contact
             </a>
           </nav>
+
+          <button
+            type="button"
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 md:hidden"
+            aria-label="Open menu"
+          >
+            <div className="space-y-1.5">
+              <span className="block h-0.5 w-5 bg-white" />
+              <span className="block h-0.5 w-5 bg-white" />
+              <span className="block h-0.5 w-5 bg-white" />
+            </div>
+          </button>
         </div>
+
+        {menuOpen && (
+          <div className="border-t border-white/10 bg-black/95 px-4 py-4 md:hidden">
+            <nav className="flex flex-col gap-4 text-sm text-white/85">
+              <a href="#services" onClick={closeMenu} className="py-1">
+                Services
+              </a>
+              <a href="#gallery" onClick={closeMenu} className="py-1">
+                Gallery
+              </a>
+              <a href="#about" onClick={closeMenu} className="py-1">
+                About
+              </a>
+              <a href="#contact" onClick={closeMenu} className="py-1">
+                Contact
+              </a>
+            </nav>
+          </div>
+        )}
       </header>
 
       <section
         id="home"
-        className="relative flex min-h-screen items-center justify-center overflow-hidden px-6 pt-24 text-center"
+        className="relative flex min-h-screen items-center justify-center overflow-hidden px-5 pt-28 text-center sm:px-6"
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),transparent_35%)]" />
 
         <div className="relative z-10 mx-auto max-w-4xl">
-          <p className="mb-4 text-sm uppercase tracking-[0.35em] text-white/50">
+          <p className="mb-4 text-[11px] uppercase tracking-[0.3em] text-white/50 sm:text-sm">
             Premium Event Design & Rentals
           </p>
 
-          <h1 className={`${fontClass} text-5xl font-semibold leading-tight md:text-7xl`}>
+          <h1 className={`${fontClass} text-4xl font-semibold leading-tight sm:text-5xl md:text-7xl`}>
             {siteContent.heroTitle}
           </h1>
 
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/70 md:text-xl">
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-white/70 sm:text-lg sm:leading-8 md:text-xl">
             {siteContent.heroSubtitle}
           </p>
 
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <a
               href={siteContent.heroButtonLink}
-              className="rounded-full bg-white px-7 py-3 text-sm font-medium text-black transition hover:opacity-90"
+              className="w-full rounded-full bg-white px-7 py-3 text-sm font-medium text-black transition hover:opacity-90 sm:w-auto"
             >
               {siteContent.heroButtonText}
             </a>
             <a
               href="#gallery"
-              className="rounded-full border border-white/20 px-7 py-3 text-sm font-medium text-white transition hover:border-white/40"
+              className="w-full rounded-full border border-white/20 px-7 py-3 text-sm font-medium text-white transition hover:border-white/40 sm:w-auto"
             >
               View Gallery
             </a>
@@ -149,19 +184,19 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="services" className="border-t border-white/10 bg-black/35 px-6 py-24 backdrop-blur-[2px]">
+      <section id="services" className="border-t border-white/10 bg-black/35 px-5 py-20 backdrop-blur-[2px] sm:px-6 sm:py-24">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-2">
           <div>
             <p className="mb-3 text-sm uppercase tracking-[0.35em] text-white/40">
               Services
             </p>
-            <h2 className={`${fontClass} text-4xl font-semibold md:text-5xl`}>
+            <h2 className={`${fontClass} text-3xl font-semibold sm:text-4xl md:text-5xl`}>
               {siteContent.servicesTitle}
             </h2>
           </div>
 
           <div>
-            <p className="text-lg leading-8 text-white/65">
+            <p className="text-base leading-7 text-white/65 sm:text-lg sm:leading-8">
               {siteContent.servicesText}
             </p>
 
@@ -186,21 +221,21 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="gallery" className="border-t border-white/10 bg-black/30 px-6 py-24 backdrop-blur-[2px]">
+      <section id="gallery" className="border-t border-white/10 bg-black/30 px-5 py-20 backdrop-blur-[2px] sm:px-6 sm:py-24">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 text-center">
             <p className="mb-3 text-sm uppercase tracking-[0.35em] text-white/40">
               Gallery
             </p>
-            <h2 className={`${fontClass} text-4xl font-semibold md:text-5xl`}>
+            <h2 className={`${fontClass} text-3xl font-semibold sm:text-4xl md:text-5xl`}>
               Inspired Event Moments
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-white/65">
+            <p className="mx-auto mt-4 max-w-2xl text-base text-white/65 sm:text-lg">
               A curated look at the kind of polished, elevated atmosphere we help create.
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
             {gallery.map((item) => (
               <div
                 key={item.id}
@@ -209,7 +244,7 @@ export default function Home() {
                 <img
                   src={item.image}
                   alt={item.title}
-                  className="h-80 w-full object-cover"
+                  className="h-72 w-full object-cover sm:h-80"
                 />
                 <div className="p-5">
                   <p className="text-base font-medium">{item.title}</p>
@@ -220,19 +255,19 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="about" className="border-t border-white/10 bg-black/35 px-6 py-24 backdrop-blur-[2px]">
+      <section id="about" className="border-t border-white/10 bg-black/35 px-5 py-20 backdrop-blur-[2px] sm:px-6 sm:py-24">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-2">
           <div>
             <p className="mb-3 text-sm uppercase tracking-[0.35em] text-white/40">
               About
             </p>
-            <h2 className={`${fontClass} text-4xl font-semibold md:text-5xl`}>
+            <h2 className={`${fontClass} text-3xl font-semibold sm:text-4xl md:text-5xl`}>
               {siteContent.aboutTitle}
             </h2>
           </div>
 
           <div>
-            <p className="text-lg leading-8 text-white/65">
+            <p className="text-base leading-7 text-white/65 sm:text-lg sm:leading-8">
               {siteContent.aboutText}
             </p>
 
@@ -254,17 +289,17 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="contact" className="border-t border-white/10 bg-black/30 px-6 py-24 backdrop-blur-[2px]">
-        <div className="mx-auto max-w-5xl rounded-[2rem] border border-white/10 bg-white/5 p-8 md:p-12">
+      <section id="contact" className="border-t border-white/10 bg-black/30 px-5 py-20 backdrop-blur-[2px] sm:px-6 sm:py-24">
+        <div className="mx-auto max-w-5xl rounded-[2rem] border border-white/10 bg-white/5 p-6 sm:p-8 md:p-12">
           <div className="grid gap-10 lg:grid-cols-2">
             <div>
               <p className="mb-3 text-sm uppercase tracking-[0.35em] text-white/40">
                 Contact
               </p>
-              <h2 className={`${fontClass} text-4xl font-semibold md:text-5xl`}>
+              <h2 className={`${fontClass} text-3xl font-semibold sm:text-4xl md:text-5xl`}>
                 {siteContent.contactTitle}
               </h2>
-              <p className="mt-5 text-lg leading-8 text-white/65">
+              <p className="mt-5 text-base leading-7 text-white/65 sm:text-lg sm:leading-8">
                 {siteContent.contactText}
               </p>
 
@@ -313,7 +348,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="border-t border-white/10 bg-black/40 px-6 py-8">
+      <footer className="border-t border-white/10 bg-black/40 px-5 py-8 sm:px-6">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 text-sm text-white/50 md:flex-row md:items-center md:justify-between">
           <p>© 2026 April Event Design</p>
           <p>Premium Event Design & Rentals</p>
