@@ -1,7 +1,12 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
-import { Inter, Playfair_Display, Poppins, Cormorant_Garamond } from "next/font/google"
+import {
+  Inter,
+  Playfair_Display,
+  Poppins,
+  Cormorant_Garamond,
+} from "next/font/google"
 import {
   defaultGallery,
   defaultSiteContent,
@@ -33,10 +38,29 @@ const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
 })
 
+type InquiryForm = {
+  name: string
+  email: string
+  eventDate: string
+  eventType: string
+  message: string
+}
+
+const defaultForm: InquiryForm = {
+  name: "",
+  email: "",
+  eventDate: "",
+  eventType: "",
+  message: "",
+}
+
 export default function Home() {
   const [siteContent, setSiteContent] = useState<SiteContent>(defaultSiteContent)
   const [gallery, setGallery] = useState<GalleryItem[]>(defaultGallery)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [form, setForm] = useState<InquiryForm>(defaultForm)
+  const [successMessage, setSuccessMessage] = useState("")
+  const [errorMessage, setErrorMessage] = useState("")
 
   useEffect(() => {
     const savedContent = localStorage.getItem(SITE_CONTENT_KEY)
@@ -90,6 +114,53 @@ export default function Home() {
   }
 
   const closeMenu = () => setMenuOpen(false)
+
+  const updateForm = (key: keyof InquiryForm, value: string) => {
+    setForm((prev) => ({
+      ...prev,
+      [key]: value,
+    }))
+  }
+
+  const handleInquirySubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setSuccessMessage("")
+    setErrorMessage("")
+
+    if (
+      !form.name.trim() ||
+      !form.email.trim() ||
+      !form.eventDate.trim() ||
+      !form.eventType.trim() ||
+      !form.message.trim()
+    ) {
+      setErrorMessage("Please fill out all fields.")
+      return
+    }
+
+    const existing = localStorage.getItem("aprileventdesign-contact-messages")
+    const parsed = existing ? JSON.parse(existing) : []
+
+    const newInquiry = {
+      id: Date.now().toString(),
+      name: form.name,
+      email: form.email,
+      eventDate: form.eventDate,
+      eventType: form.eventType,
+      message: form.message,
+      createdAt: new Date().toISOString(),
+      status: "new",
+    }
+
+    const updated = [newInquiry, ...parsed]
+    localStorage.setItem(
+      "aprileventdesign-contact-messages",
+      JSON.stringify(updated)
+    )
+
+    setForm(defaultForm)
+    setSuccessMessage("Your inquiry has been sent successfully.")
+  }
 
   return (
     <main className={`${bodyFontClass} text-white`} style={mainStyle}>
@@ -318,31 +389,58 @@ export default function Home() {
             </div>
 
             <div className="rounded-3xl border border-white/10 bg-black/40 p-6">
-              <div className="grid gap-4">
+              <form className="grid gap-4" onSubmit={handleInquirySubmit}>
                 <input
+                  value={form.name}
+                  onChange={(e) => updateForm("name", e.target.value)}
                   className="rounded-2xl border border-white/10 bg-black px-4 py-3 text-white outline-none"
                   placeholder="Your Name"
                 />
+
                 <input
+                  type="email"
+                  value={form.email}
+                  onChange={(e) => updateForm("email", e.target.value)}
                   className="rounded-2xl border border-white/10 bg-black px-4 py-3 text-white outline-none"
                   placeholder="Email Address"
                 />
+
                 <input
+                  type="date"
+                  value={form.eventDate}
+                  onChange={(e) => updateForm("eventDate", e.target.value)}
                   className="rounded-2xl border border-white/10 bg-black px-4 py-3 text-white outline-none"
-                  placeholder="Event Date"
                 />
+
                 <input
+                  value={form.eventType}
+                  onChange={(e) => updateForm("eventType", e.target.value)}
                   className="rounded-2xl border border-white/10 bg-black px-4 py-3 text-white outline-none"
                   placeholder="Event Type"
                 />
+
                 <textarea
+                  value={form.message}
+                  onChange={(e) => updateForm("message", e.target.value)}
                   className="min-h-[140px] rounded-2xl border border-white/10 bg-black px-4 py-3 text-white outline-none"
                   placeholder="Tell us about your vision..."
                 />
-                <button className="rounded-full bg-white px-6 py-3 text-sm font-medium text-black transition hover:opacity-90">
+
+                {errorMessage && (
+                  <p className="text-sm text-red-400">{errorMessage}</p>
+                )}
+
+                {successMessage && (
+                  <p className="text-sm text-green-400">{successMessage}</p>
+                )}
+
+                <button
+                  type="submit"
+                  className="rounded-full bg-white px-6 py-3 text-sm font-medium text-black transition hover:opacity-90"
+                >
                   Send Inquiry
                 </button>
-              </div>
+              </form>
             </div>
           </div>
         </div>

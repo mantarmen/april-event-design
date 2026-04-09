@@ -16,6 +16,11 @@ const cards = [
     href: "/admin/gallery",
   },
   {
+    title: "Contact Messages",
+    description: "View messages sent from the website contact form.",
+    href: "/admin/contact",
+  },
+  {
     title: "Settings",
     description: "Update phone, email, wallpaper, colors, and font style.",
     href: "/admin/settings",
@@ -41,7 +46,7 @@ export default function AdminPage() {
           </p>
           <h1 className="text-4xl font-semibold">April Event Design Admin</h1>
           <p className="mt-3 max-w-2xl text-white/60">
-            Manage your homepage content, gallery visuals, and business details here.
+            Manage your homepage content, gallery visuals, contact messages, and business details here.
           </p>
         </div>
 
@@ -57,7 +62,7 @@ export default function AdminPage() {
           </button>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
           {cards.map((card) => (
             <Link
               key={card.title}
